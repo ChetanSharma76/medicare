@@ -46,9 +46,7 @@ A full-stack web application for booking and managing doctor appointments, desig
 
 ## 🌐 Live Demo
 
-👉 [Visit the Live Site]([https://your-live-link.com](https://medicare-frontend-a8f1.onrender.com))  
-📁 [Admin Panel (if separate)]([https://admin.your-live-link.com](https://medicare-admin-6c1b.onrender.com))
-
+👉 [Visit the Live Site]https://medicare-frontend-a8f1.onrender.com
 
 ## 📸 Screenshots
 ![Screenshot (41)](https://github.com/user-attachments/assets/f9c98069-30fe-4b48-92f2-870f5779e9b6)
