@@ -1,4 +1,4 @@
-# medicare
+# Medicare
 # 🩺 Doctor Appointment Booking Website
 
 A full-stack web application for booking and managing doctor appointments, designed to streamline the interaction between **patients** and **doctors**. Built using the **MERN stack** (MongoDB, Express.js, React, Node.js), this platform enables smooth scheduling, efficient management, and a user-friendly interface.
