@@ -20,7 +20,7 @@ const Login = () => {
     try {
       
       if(state==='Sign Up'){
-        const data = await axios.post(backendUrl+'/api/user/register',{name,email,password});
+        const {data} = await axios.post(backendUrl+'/api/user/register',{name,email,password});
         console.log(data)
         if(data.success){
           toast.success('Account Created Successfully')
