@@ -24,7 +24,7 @@ const Login = () => {
         console.log(data)
         if(data.success){
           toast.success('Account Created Successfully')
-          navigate('/')
+          setState('Login');
         }
         else{
           toast.error(data.message)
