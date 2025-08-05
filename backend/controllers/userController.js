@@ -121,65 +121,51 @@ const updateProfile = async(req,res) => {
 }
 
 //api to book appointment
-const bookAppointment = async(req,res)=>{
-    try {
-        const {userId,docId,slotDate,slotTime} = req.body
+const bookAppointment = async (req, res) => {
+  try {
+    const { userId, docId, slotDate, slotTime } = req.body;
 
-        //getting the data of the doctor that user has booked using the docId
-        const docData = await doctorModel.findById(docId).select('-password')
+    //Atomically push slotTime if it's not already booked
+    const pushResult = await doctorModel.updateOne(
+      {
+        _id: docId,
+        available: true,
+        [`slots_booked.${slotDate}`]: { $ne: slotTime }
+      },
+      {
+        $push: { [`slots_booked.${slotDate}`]: slotTime }
+      }
+    );
 
-        if (!docData.available) {
-            return res.json({success:false,message:'Doctor not available'})
-        }
-
-        let slots_booked=docData.slots_booked
-
-        //checking for the slots availability of that doctor
-        //by checking does that slot already present in the slots_booked array for doctor
-        if(slots_booked[slotDate]){
-            if(slots_booked[slotDate].includes(slotTime)){
-                return res.json({success:false,message:'Slot Not available'})
-            }
-            else{
-                slots_booked[slotDate].push(slotTime)
-            }
-        }
-        else{
-            slots_booked[slotDate]=[]
-            slots_booked[slotDate].push(slotTime)
-        }
-
-        const userData = await userModel.findById(userId).select('-password')
-
-        delete docData.slots_booked
-
-        const appointmentData = {
-            
-            userId,
-            docId,
-            userData,
-            docData,
-            amount:docData.fees,
-            slotTime,
-            slotDate,
-            date:Date.now()
-
-        }
-
-        const newAppointment = new appointmentModel(appointmentData)
-        await newAppointment.save() 
-
-        //now updating the slots_booked property for the doctor with the new slot begin considered
-        await doctorModel.findByIdAndUpdate(docId,{slots_booked})
-
-        res.json({success:true,message:'Appointment booked'})
-
-
-    } catch (error) {
-        console.log(error)
-        res.json({success:false,message:error.message})
+    if (pushResult.modifiedCount === 0) {
+      return res.json({ success: false, message: 'Slot Not available or Doctor unavailable' });
     }
-}
+
+    //Fetch data for user and doctor
+    const userData = await userModel.findById(userId).select('-password');
+    const docData = await doctorModel.findById(docId).select('-password');
+
+    const appointmentData = {
+      userId,
+      docId,
+      userData,
+      docData,
+      amount: docData.fees,
+      slotTime,
+      slotDate,
+      date: Date.now()
+    };
+
+    const newAppointment = new appointmentModel(appointmentData);
+    await newAppointment.save();
+
+    res.json({ success: true, message: 'Appointment booked' });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 //api to get user appointment for frontend my appointment page
 const listAppointment = async(req,res)=>{
