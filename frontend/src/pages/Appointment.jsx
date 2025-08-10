@@ -98,9 +98,10 @@ const Appointment = () => {
 
   const bookAppointment = async() => {
     if(!token){
-      toast.warn({message:'Login to Book Appointment'})
+      toast.warn('Login to Book Appointment')
       //sending the user to the login page
       navigate('/login')
+      return;
     }
     try {
       const date = docSlots[slotIndex][0].datetime
